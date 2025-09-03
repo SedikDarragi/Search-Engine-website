@@ -1,0 +1,113 @@
+.history-management {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+  }
+  
+  .back-button {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  
+  .back-button:hover {
+    background: var(--hover-bg);
+  }
+  
+  .back-button svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-primary);
+  }
+  
+  .history-actions {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .clear-all {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid var(--danger-border);
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .clear-all:hover {
+    background-color: var(--danger-bg-hover);
+  }
+  
+  .history-table-container {
+    overflow-x: auto;
+  }
+  
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .history-table th,
+  .history-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .history-table th {
+    background-color: var(--bg-secondary);
+    font-weight: 500;
+  }
+  
+  .type-cell {
+    text-transform: capitalize;
+  }
+  
+  .no-history {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+  }
+  
+  .delete-item {
+    padding: 0.5rem 1rem;
+    background-color: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid var(--danger-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .delete-item:hover {
+    background-color: var(--danger-bg-hover);
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+  }
+  
+  .error {
+    text-align: center;
+    padding: 2rem;
+    color: var(--danger);
+    background-color: var(--danger-bg);
+    border-radius: 8px;
+    margin: 1rem;
+  }

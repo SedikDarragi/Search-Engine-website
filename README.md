@@ -1,6 +1,8 @@
 # Search Engine
 
 A full-stack search engine application with React frontend and Node.js/Express backend.
+for a website demo click [Portfolio Website](https://local-search-engine.netlify.app)
+currently the backend is not fully function on the website, so it's a work in progress.
 
 ## Features
 

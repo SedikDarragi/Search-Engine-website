@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as BackIcon } from '../icons/back.svg';
 import { ReactComponent as TrashIcon } from '../icons/trash.svg';
 import { ReactComponent as ClockIcon } from '../icons/clock.svg';
+import { API } from '../config';
 import '../css/HistoryManagement.css';
 
 const HistoryManagement = ({ user }) => {
@@ -25,7 +26,7 @@ const HistoryManagement = ({ user }) => {
         
         console.log('Fetching history for user:', user.username); // Debug log
         
-        const response = await fetch('http://localhost:3000/api/history', {
+        const response = await fetch(API.history, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const HistoryManagement = ({ user }) => {
 
   const deleteItem = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/history/${id}`, {
+      const response = await fetch(API.historyItem(id), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ const HistoryManagement = ({ user }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/history', {
+      const response = await fetch(API.history, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -5,6 +5,7 @@ import ResultsList from './components/ResultsList';
 import UserIcon from './components/UserIcon';
 import Settings from './components/Settings';
 import HistoryManagement from './components/HistoryManagement';
+import { API } from './config';
 import './App.css';
 
 function App() {
@@ -59,7 +60,7 @@ function App() {
                        (user === 'guest' ? activeSearchType : appSettings.defaultSearchType);
       
       const response = await fetch(
-        `http://localhost:3000/api/search?q=${encodeURIComponent(query)}&type=${searchType}&page=${page}`,
+        API.search(query, searchType, page),
         {
           headers: {
             'x-user': user !== 'guest' ? user.username : undefined

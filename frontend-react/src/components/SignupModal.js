@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API } from '../config';
 import '../App.css';
 
 const SignupModal = ({ onClose, onSignup }) => {
@@ -14,7 +15,7 @@ const SignupModal = ({ onClose, onSignup }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/signup', {
+      const response = await fetch(API.signup, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password })

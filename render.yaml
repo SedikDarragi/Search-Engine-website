@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: search-engine-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false # set in Render dashboard — required
+      - key: FRONTEND_URL
+        sync: false # set to your Netlify URL e.g. https://your-site.netlify.app
+      # PORT is injected automatically by Render — do not set manually

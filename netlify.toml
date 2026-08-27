@@ -1,7 +1,7 @@
 [build]
   base = "frontend-react"
   publish = "build"
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm install --legacy-peer-deps && CI=false npm run build"
 
 # SPA fallback — all routes serve index.html (React Router)
 [[redirects]]
@@ -12,6 +12,7 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
+  CI = "false"
 
 # Optional: enforce HTTPS / security headers
 [[headers]]

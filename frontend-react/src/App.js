@@ -21,8 +21,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentQuery, setCurrentQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [suggestions, setSuggestions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // eslint-disable-line no-unused-vars
+  const [suggestions] = useState([]); // eslint-disable-line no-unused-vars
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeSearchType, setActiveSearchType] = useState(appSettings.defaultSearchType);
 

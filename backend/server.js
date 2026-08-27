@@ -288,9 +288,8 @@ app.delete('/api/history/:id', checkAuth, async (req, res) => {
   }
 });
 
-// Search Route — now fully implemented
+// Search Route — MongoDB optional: if db unavailable, returns mock results so demo still works
 app.get('/api/search', async (req, res) => {
-  if (requireDb(res)) return;
   const { q, type = 'web', page = 1, limit: limitParam } = req.query;
   const user = req.headers['x-user'] || 'guest';
 
@@ -298,11 +297,89 @@ app.get('/api/search', async (req, res) => {
     return errorResponse(res, 400, "Query parameter 'q' is required");
   }
 
-  try {
-    const pageNum = Math.max(1, parseInt(page, 10) || 1);
-    const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10) || 10));
-    const skip = (pageNum - 1) * limit;
+  const pageNum = Math.max(1, parseInt(page, 10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10) || 10));
+  const skip = (pageNum - 1) * limit;
 
+  // Helper: generate mock results when DB is unavailable (demo mode)
+  function getMockResults() {
+    const base = [
+      {
+        _id: 'mock_imset',
+        title: 'IMSET',
+        description: 'site IMSET - Institut Maghrébin des Sciences Économiques et de Technologie',
+        url: 'https://www.imset.ens.tn/',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIkRVLdKvvwqafDckZzaZXZUNii6Dru79zTg&s',
+        contentType: 'image',
+        tags: ['imset', 'education'],
+      },
+      {
+        _id: 'mock_myu',
+        title: 'MYU',
+        description: 'website MYU - Université Centrale portal',
+        url: 'https://myu.universitecentrale.net/sge/login.faces',
+        image: 'https://myu.universitecentrale.net/sge/javax.faces.resource/img/logo.png.faces',
+        contentType: 'image',
+        tags: ['myu', 'university'],
+      },
+      {
+        _id: 'mock_1',
+        title: `${q} - Documentation`,
+        description: `Learn more about ${q} with official docs and tutorials.`,
+        url: `https://developer.mozilla.org/search?q=${encodeURIComponent(q)}`,
+        tags: [q],
+      },
+      {
+        _id: 'mock_2',
+        title: `${q} - GitHub results`,
+        description: `Explore open-source projects related to ${q} on GitHub.`,
+        url: `https://github.com/search?q=${encodeURIComponent(q)}`,
+        tags: [q],
+      },
+    ];
+
+    // For images type, only return items with images; for web, return all
+    let filtered = type === 'images' ? base.filter((i) => i.image) : base;
+
+    // Simple query filter: if q doesn't match IMSET/MYU, keep generic mocks
+    const qLower = q.toLowerCase();
+    const hasSpecificMatch = filtered.some(
+      (i) => i.title.toLowerCase().includes(qLower) || i.tags.some((t) => qLower.includes(t.toLowerCase()))
+    );
+    if (!hasSpecificMatch && type !== 'images') {
+      filtered = filtered.filter((i) => i._id.startsWith('mock_1') || i._id.startsWith('mock_2'));
+    }
+
+    const total = filtered.length;
+    const paged = filtered.slice(skip, skip + limit);
+    return { results: paged, total };
+  }
+
+  // If DB is not connected, return mock results immediately (no 503)
+  if (!db) {
+    console.warn(`⚠️  DB disconnected — returning mock results for q="${q}" type=${type}`);
+    const { results, total } = getMockResults();
+    // Still try to track history in-memory? Skip when no DB.
+    return res.json({
+      success: true,
+      items: {
+        mongo: results,
+        google: [],
+      },
+      pagination: {
+        page: pageNum,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit) || 1,
+      },
+      query: q,
+      type,
+      mock: true,
+      warning: 'Database not connected — showing mock results. Set MONGODB_URI to enable real search.',
+    });
+  }
+
+  try {
     // Try full-text search first, fall back to regex if no text index hit
     let mongoResults = [];
     let total = 0;
@@ -344,6 +421,29 @@ app.get('/api/search', async (req, res) => {
         .toArray();
     }
 
+    // If DB has no matching docs, fall back to mock so user still sees something (optional)
+    if (mongoResults.length === 0 && total === 0) {
+      console.log(`No DB results for q="${q}" — supplementing with mock`);
+      const { results, total: mockTotal } = getMockResults();
+      // Return mock as mongo results, but mark as mock
+      return res.json({
+        success: true,
+        items: {
+          mongo: results,
+          google: [],
+        },
+        pagination: {
+          page: pageNum,
+          limit,
+          total: mockTotal,
+          totalPages: Math.ceil(mockTotal / limit) || 1,
+        },
+        query: q,
+        type,
+        mock: true,
+      });
+    }
+
     // History tracking — append to user's embedded searchHistory if authenticated
     if (user !== 'guest') {
       try {
@@ -373,13 +473,24 @@ app.get('/api/search', async (req, res) => {
         page: pageNum,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit) || 1,
       },
       query: q,
       type,
     });
   } catch (err) {
-    errorResponse(res, 500, 'Search failed', err);
+    // On any DB error, fall back to mock instead of 500 so site stays usable
+    console.error('Search failed, returning mock fallback:', err.message);
+    const { results, total } = getMockResults();
+    return res.json({
+      success: true,
+      items: { mongo: results, google: [] },
+      pagination: { page: pageNum, limit, total, totalPages: Math.ceil(total / limit) || 1 },
+      query: q,
+      type,
+      mock: true,
+      warning: 'Search temporarily using mock data due to DB error.',
+    });
   }
 });
 

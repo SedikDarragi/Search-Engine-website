@@ -1,8 +1,7 @@
 # Search Engine
 
 A full-stack search engine application with React frontend and Node.js/Express backend.
-for a website demo click [Here](https://local-search-engine.netlify.app)
-currently the backend is not fully function on the website, so it's a work in progress.
+Live demo: [https://searchenginewebsite.netlify.app/](https://searchenginewebsite.netlify.app/) — API: `https://search-engine-website.onrender.com`
 
 ## Features
 
@@ -74,7 +73,7 @@ REACT_APP_API_URL=https://your-api.onrender.com
 ### Backend → Render
 1. Push to GitHub. Render detects `render.yaml`.
 2. In Render Dashboard → New Web Service → connect repo → `Root Directory: backend`.
-3. Set env vars: `MONGODB_URI` (Atlas URI), `FRONTEND_URL` (your Netlify URL e.g. `https://local-search-engine.netlify.app`), `NODE_ENV=production`.
+3. Set env vars: `MONGODB_URI` (Atlas URI), `FRONTEND_URL` (your Netlify URL e.g. `https://searchenginewebsite.netlify.app`), `NODE_ENV=production`.
 4. Build: `npm ci` · Start: `npm start` · Health check: `/api/health`.
 5. (Optional) Seed DB once: `MONGODB_URI=... node seed.js` locally or via Render Shell.
 

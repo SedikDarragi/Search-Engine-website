@@ -18,8 +18,9 @@
   <b>⚙️ API:</b> <a href="https://search-engine-website.onrender.com/api/health">search-engine-website.onrender.com</a>
 </p>
 
-<img src="frontend-react\src\icons\demo.png" alt="My Image" width="500">
-
+<p align="center">
+  <img src="frontend-react\src\icons\demo.png" alt="My Image" width="800">
+</p>
 
 ---
 

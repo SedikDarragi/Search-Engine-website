@@ -18,6 +18,9 @@
   <b>⚙️ API:</b> <a href="https://search-engine-website.onrender.com/api/health">search-engine-website.onrender.com</a>
 </p>
 
+![App Screenshot](frontend-react\src\icons\demo.png)
+
+
 ---
 
 ## ✨ Features
